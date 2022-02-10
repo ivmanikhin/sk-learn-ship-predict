@@ -1,21 +1,12 @@
 from matplotlib import pyplot as plt
 import numpy as np
-import pandas as pd
-from tabulate import tabulate
 from easy_SQL.easy_SQL import *
 from scipy import stats
-# from sklearn.model_selection import train_test_split
-# from sklearn.linear_model import LogisticRegression, LinearRegression, SGDClassifier
-# from sklearn.tree import DecisionTreeClassifier
-# from sklearn.ensemble import RandomForestClassifier, AdaBoostRegressor, AdaBoostClassifier
-# from sklearn.naive_bayes import GaussianNB
-# from sklearn.neighbors import KNeighborsClassifier
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, BatchNormalization
+from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import Sequential
 from sklearn.model_selection import train_test_split
-from sklearn.compose import make_column_transformer
-from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, RobustScaler
+from sklearn.preprocessing import RobustScaler
 import time
 
 
@@ -29,12 +20,10 @@ pd.set_option('max_colwidth', None)
 
 # Getting data from SQLite
 df = extract_table_from_sql(table_name="main_ships_data_raw",
-                            sql_column_names="uni_type, ice_class, loa, boa, draft, speed, power, year",
-                            df_column_names=["type", "ice", "loa", "boa", "draft", "speed", "power", "year"],
-                            additional_parameters="where year > 1985 and loa > 30 and uni_type not NULL and boa not NULL and (loa / boa) > 2 and draft between 1 and 30 and speed between 5 and 100 and power between 10 and 80000")
-# print(tabulate(df.head(50), headers='keys', tablefmt='psql'))
-# df = df.sample(frac=0.1)
-print(df.shape)
+                            sql_column_names="uni_type, ice_class, loa, boa, draft, displacement, speed, power, year, engine_num, engine_rpm, propulsion_num, propulsion_type",
+                            df_column_names=["type", "ice", "loa", "boa", "draft", "displacement", "speed", "power", "year", "engine_num", "engine_rpm", "propulsion_num", "propulsion_type"],
+                            additional_parameters="where year > 1985 and year != '' and loa > 15 and uni_type not NULL and boa not NULL and (loa / boa) > 2 and draft between 1 and 30 and speed between 3 and 100 and power between 10 and 120000 and engine_num > 0 and engine_rpm > 0 and propulsion_num > 0 and propulsion_type not NULL and displacement > 0")
+
 
 # Converting to numbers
 df["loa"] = df["loa"].astype("float64")
@@ -43,15 +32,28 @@ df["draft"] = df["draft"].astype("float64")
 df["power"] = df["power"].astype("float64")
 df["speed"] = df["speed"].astype("float64")
 df["year"] = df["year"].astype("int32")
-type = pd.get_dummies(df["type"], prefix="type")
+df["displacement"] = df["displacement"].astype("float64")
+df["engine_num"] = df["engine_num"].astype("int32")
+df["engine_rpm"] = df["engine_rpm"].astype("float64")
+df["propulsion_num"] = df["propulsion_num"].astype("int32")
+df["cx"] = df["power"] / (df["speed"] ** 2 * df["draft"] * df["boa"])
+df["fatness"] = df["loa"] / df["boa"]
+df["vol"] = df["loa"] * df["boa"] * df["draft"]
+df = df.drop(df[df['type'] == "cargo"].sample(frac=.95).index)
+df = df.drop(df[df['type'] == "tanker / gas carrier"].sample(frac=.95).index)
+df = df.drop(df[df['type'] == "container ship"].sample(frac=.85).index)
+print(df["type"].value_counts())
+ship_type = pd.get_dummies(df["type"], prefix="type")
+propulsion_type = pd.get_dummies(df["propulsion_type"], prefix="propulsion_type")
 ice = pd.get_dummies(df["ice"], prefix="ice")
-df_one_hot = pd.concat([df.drop(["type", "ice"], axis=1), type, ice], axis=1)
-# Removing outliers
-df_one_hot["fatness"] = df_one_hot["loa"] / df_one_hot["boa"]
-good_rows = (np.abs(stats.zscore(df_one_hot["fatness"])) < 2)
-df_one_hot = df_one_hot[good_rows]
+df_one_hot = pd.concat([df.drop(["type", "ice", "propulsion_type"], axis=1), ship_type, ice, propulsion_type], axis=1)
 print(df_one_hot.shape)
-time.sleep(3)
+# Removing outliers
+print(df_one_hot.head(10))
+# good_rows = (np.abs(stats.zscore(df_one_hot["fatness"])) < 3)
+# df_one_hot = df_one_hot[good_rows]
+# print(df_one_hot.shape)
+# time.sleep(3)
 
 ######################################################
 #
@@ -70,12 +72,14 @@ time.sleep(3)
 #
 
 #
-y = df_one_hot["power"]
-X = df_one_hot.drop(["power"], axis=1)
+y = df_one_hot["engine_rpm"]
+print("================================")
+X = df_one_hot.drop(["propulsion_num", "engine_num", "engine_rpm", "displacement", "propulsion_type_Azimuth", "propulsion_type_Contra-Rotating", "propulsion_type_Controllable Pitch", "propulsion_type_Fixed Pitch", "propulsion_type_Voith-Schneider", "propulsion_type_Waterjets"], axis=1)
 
+print("================================")
 
 # splitting to train and test datasets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 
 scaler = RobustScaler()
@@ -84,26 +88,28 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
 
-tf.random.set_seed(42)
-leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.002)
+tf.random.set_seed(32)
+leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.001)
 model = Sequential([
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
-    Dense(500, activation=leaky_relu),
+    # Dropout(0.5),
+    Dense(240, activation=leaky_relu),
+    Dense(240, activation=leaky_relu),
+    Dense(240, activation=leaky_relu),
+    Dense(240, activation=leaky_relu),
+    Dense(240, activation=leaky_relu),
+    Dense(240, activation=leaky_relu),
+
+    # Dense(200, activation=leaky_relu),
+    # Dense(200, activation=leaky_relu),
+    # Dense(200, activation=leaky_relu),
     Dense(1)
 ])
+
 model.compile(loss=tf.keras.losses.mape,
-              optimizer=tf.keras.optimizers.Adam(learning_rate=0.005),
+              optimizer=tf.keras.optimizers.Adam(learning_rate=0.0002),
               metrics=["mean_absolute_percentage_error"])
 
-history = model.fit(X_train, y_train, epochs=200, verbose=1, batch_size=1000)
+history = model.fit(X_train, y_train, epochs=400, verbose=1, batch_size=300)
 
 
 model.evaluate(X_test, y_test)
@@ -112,6 +118,7 @@ plt.ylabel("loss")
 plt.xlabel("epochs")
 plt.show()
 
+model.save("engine_rpm.h5")
 '''
 tf.random.set_seed(42)
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.002)

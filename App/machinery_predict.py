@@ -1,4 +1,4 @@
-from tensorflow-cpu.keras.models import load_model
+from tensorflow.keras.models import load_model
 from pickle import load
 
 power_predict = load_model('power.h5')

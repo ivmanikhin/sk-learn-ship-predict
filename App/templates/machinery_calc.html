@@ -4,97 +4,100 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Ship design calculator</h1>
+    <h2>Machinery</h2>
+    <h3>Main ship parameters:</h3>
     <form action="{{ url_for('machinery_page') }}" method = "POST">
-        <table class="table table-hover table-dark" style="width:1000px;">
+        <table class="table table-hover table-dark" style="width:500px;">
             <col style="width:300px">
-            <col style="width:200px">
             <col style="width:200px">
               <thead>
                 <tr>
                   <th scope="col">Parameter</th>
                   <th scope="col">Value</th>
-                  <th scope="col">Unit</th>
                 </tr>
               </thead>
               <tbody>
                   <tr>
-                    <td>Length overall</td>
-                    <td><input type="number" step="0.1" class="form-control" name="loa" placeholder="120"></td>
-                    <td>m</td>
+                    <td>Length overall, m</td>
+                    <td><input type="number" step="0.1" class="form-control" name="loa" value="{{ form_data['loa'] }}"></td>
                   </tr>
                   <tr>
-                    <td>Breadth</td>
-                    <td><input type="number" step="0.1" class="form-control" name="boa" placeholder="20"></td>
-                    <td>m</td>
+                    <td>Breadth, m</td>
+                    <td><input type="number" step="0.1" class="form-control" name="boa" value="{{ form_data['boa'] }}"></td>
                   </tr>
                   <tr>
-                    <td>Draught</td>
-                    <td><input type="number" step="0.1" class="form-control" name="draught" placeholder="6"></td>
-                    <td>m</td>
+                    <td>Draught, m</td>
+                    <td><input type="number" step="0.1" class="form-control" name="draught" value="{{ form_data['draught'] }}"></td>
                   </tr>
                   <tr>
-                    <td>Speed</td>
-                    <td><input type="number" step="0.1" class="form-control" name="speed" placeholder="6"></td>
-                    <td>knot</td>
+                    <td>Speed, kn</td>
+                    <td><input type="number" step="0.1" class="form-control" name="speed" value="{{ form_data['speed'] }}"></td>
                   </tr>
                   <tr>
                     <td>Year</td>
-                    <td><input type="number" step="0.1" class="form-control" name="year" placeholder="2022"></td>
-                    <td></td>
+                    <td><input type="number" step="1" class="form-control" name="year" value="{{ form_data['year'] }}"></td>
                   </tr>
                   <tr>
                     <td>Vessel type</td>
                     <td>
-                        <select name="type" class="form-select">
-                            <option selected>{{ ship_types[0] }}</option>
-                            {% for type in ship_types[1:] %}
-                                <option>{{ type }}</option>
+                        <select name="ship_type" class="form-select">
+                            {% for ship_type in ship_types %}
+                                {% if ship_type == form_data['ship_type'] %}
+                                    <option selected>{{ ship_type }}</option>
+                                {% else %}
+                                    <option>{{ ship_type }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </td>
-                    <td></td>
                   </tr>
                   <tr>
                     <td>Ice class</td>
                     <td>
+                        {% if form_data['ice_class'] == 'on' %}
+                        <input class="form-check-input" type="checkbox" checked name="ice_class">
+                        {% else %}
                         <input class="form-check-input" type="checkbox" name="ice_class">
+                        {% endif %}
                     </td>
-                    <td></td>
                   </tr>
                   <tr>
                     <td>Dynpos</td>
                     <td>
+                        {% if form_data['dynpos'] == 'on' %}
+                        <input class="form-check-input" type="checkbox" checked name="dynpos">
+                        {% else %}
                         <input class="form-check-input" type="checkbox" name="dynpos">
+                        {% endif %}
                     </td>
-                    <td></td>
                   </tr>
                   <tr>
                     <td></td>
                     <td>
                         <button type="submit" class="btn btn-primary btn-dark">Calculate</button>
                     </td>
-                    <td></td>
                   </tr>
               </tbody>
         </table>
     </form>
-
-    <table class="table table-hover table-dark" style="width:1000px">
+    <h3>Predicted machinery:</h3>
+    <table class="table table-hover table-dark" style="width:500px">
         <col style="width:300px">
-        <col style="width:200px">
         <col style="width:200px">
         <thead>
           <tr>
             <th scope="col">Parameter</th>
             <th scope="col">Value</th>
-            <th scope="col">Unit</th>
           </tr>
         </thead>
         <tbody>
-
-
-          </tbody>
+            {% for key, value in result.items() %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
     <!-- Optional JavaScript; choose one of the two! -->
 

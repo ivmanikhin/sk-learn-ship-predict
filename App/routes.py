@@ -10,15 +10,15 @@ def home_page():
 
 @app.route('/machinery', methods=['POST', 'GET'])
 def machinery_page():
-    form_data = {'ice_class': 0,
-                 'dynpos': 0,
+    form_data = {'ice_class': 'on',
+                 'dynpos': 'on',
                  'ship_type': 'Research',
-                 'loa': 120,
+                 'loa': 122,
                  'boa': 20,
-                 'draught': 6,
+                 'draught': 5.6,
                  'speed': 15,
                  'year': 2024}
-    result = {'Total engine power, kW': 0,
+    result = {'Total propulsion power, kW': 0,
               'Number of main engines': 0,
               'Engine RPM': 0,
               'Number of propulsion units': 0}

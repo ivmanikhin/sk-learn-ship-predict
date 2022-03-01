@@ -27,14 +27,14 @@ def predict_machinery(form_data):
     df['dynpos_0'] = 0 if form_data['dynpos'] == 'on' else 1
     df['dynpos_1'] = 1 if form_data['dynpos'] == 'on' else 0
     df = [list(df.values())]
-    print(df)
+    # print(df)
     input_data = scaler.transform(df)
-    print(input_data)
+    # print(input_data)
     power = round(power_predict.predict(input_data)[0][0])
     engine_num = round(engine_num_predict.predict(input_data)[0][0])
     engine_rpm = round(engine_rpm_predict.predict(input_data)[0][0])
     propulsion_num = round(propulsion_num_predict.predict(input_data)[0][0])
-    return {'Total engine power, kW': power,
+    return {'Total propulsion power, kW': power,
             'Number of main engines': engine_num,
             'Engine RPM': engine_rpm,
             'Number of propulsion units': propulsion_num}

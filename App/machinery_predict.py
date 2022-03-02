@@ -1,11 +1,13 @@
 from tensorflow.keras.models import load_model
 from pickle import load
+from os import sep
 
-power_predict = load_model('power.h5')
-scaler = load(open('scaler.pkl', 'rb'))
-engine_num_predict = load_model('engine_num.h5')
-engine_rpm_predict = load_model('engine_rpm.h5')
-propulsion_num_predict = load_model('propulsion_num.h5')
+
+power_predict = load_model(f'App{sep}nn_machinery{sep}power.h5')
+scaler = load(open(f'App{sep}nn_machinery{sep}machinery_scaler.pkl', 'rb'))
+engine_num_predict = load_model(f'App{sep}nn_machinery{sep}engine_num.h5')
+engine_rpm_predict = load_model(f'App{sep}nn_machinery{sep}engine_rpm.h5')
+propulsion_num_predict = load_model(f'App{sep}nn_machinery{sep}propulsion_num.h5')
 
 ship_types = ['Fishing', 'Cargo', 'Container ship', 'Drillship / Crane / Pipelayer', 'Lite',
               'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug',

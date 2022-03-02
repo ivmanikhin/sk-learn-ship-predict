@@ -3,6 +3,7 @@ from flask import render_template, request
 
 
 
+
 @app.route('/')
 def home_page():
     return render_template('home.html')
@@ -10,14 +11,15 @@ def home_page():
 
 @app.route('/machinery', methods=['POST', 'GET'])
 def machinery_page():
-    form_data = {'ice_class': 'on',
-                 'dynpos': 'on',
+    form_data = {'ice_class': '',
+                 'dynpos': '',
                  'ship_type': 'Research',
                  'loa': 122,
                  'boa': 20,
                  'draught': 5.6,
                  'speed': 15,
                  'year': 2024}
+
     result = {'Total propulsion power, kW': 0,
               'Number of main engines': 0,
               'Engine RPM': 0,

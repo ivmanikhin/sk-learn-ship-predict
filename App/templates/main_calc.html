@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}
+ Main ship parameters
+{% endblock %}
+
+{% block content %}
+    <h2>Main ship parameters</h2>
+    <h3>Basic requirements:</h3>
+    <form action="{{ url_for('main_page') }}" method = "POST">
+        <table class="table table-hover table-dark" style="width:500px;">
+            <col style="width:300px">
+            <col style="width:200px">
+              <thead>
+                <tr>
+                  <th scope="col">Parameter</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                    <td>Deadweight, ton</td>
+                    <td><input type="number" step="0.1" class="form-control" name="deadweight" value="{{ form_data['deadweight'] }}"></td>
+                  </tr>
+                  <tr>
+                    <td>Speed, kn</td>
+                    <td><input type="number" step="0.1" class="form-control" name="speed" value="{{ form_data['speed'] }}"></td>
+                  </tr>
+                  <tr>
+                    <td>Year</td>
+                    <td><input type="number" step="1" class="form-control" name="year" value="{{ form_data['year'] }}"></td>
+                  </tr>
+                  <tr>
+                    <td>Vessel type</td>
+                    <td>
+                        <select name="ship_type" class="form-select">
+                            {% for ship_type in ['Fishing', 'Cargo', 'Container ship', 'Drillship / Crane / Pipelayer', 'Lite',
+              'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug',
+              'Vehicles carrier / Ro-Ro', 'Yacht / High-speed craft'] %}
+                                {% if ship_type == form_data['ship_type'] %}
+                                    <option selected>{{ ship_type }}</option>
+                                {% else %}
+                                    <option>{{ ship_type }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Ice class</td>
+                    <td>
+                        {% if form_data['ice_class'] == 'on' %}
+                        <input class="form-check-input" type="checkbox" checked name="ice_class">
+                        {% else %}
+                        <input class="form-check-input" type="checkbox" name="ice_class">
+                        {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Dynpos</td>
+                    <td>
+                        {% if form_data['dynpos'] == 'on' %}
+                        <input class="form-check-input" type="checkbox" checked name="dynpos">
+                        {% else %}
+                        <input class="form-check-input" type="checkbox" name="dynpos">
+                        {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit" class="btn btn-primary btn-dark" style="border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186); border-width: 1px">Calculate</button>
+                    </td>
+                  </tr>
+              </tbody>
+        </table>
+    </form>
+    <h3>Predicted ship dimensions:</h3>
+        <table class="table table-hover table-dark" style="width:500px;">
+            <col style="width:300px">
+            <col style="width:200px">
+              <thead>
+                <tr>
+                  <th scope="col">Parameter</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for key, value in result[0].items() %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+        </table>
+    <h3>Predicted machinery:</h3>
+    <table class="table table-hover table-dark" style="width:500px">
+        <col style="width:300px">
+        <col style="width:200px">
+        <thead>
+          <tr>
+            <th scope="col">Parameter</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for key, value in result[1].items() %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+{% endblock %}

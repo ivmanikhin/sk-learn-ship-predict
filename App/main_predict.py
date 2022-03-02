@@ -3,25 +3,21 @@ from pickle import load
 from os import sep
 
 
-power_predict = load_model(f'App{sep}nn_machinery{sep}power.h5')
-scaler = load(open(f'App{sep}nn_machinery{sep}machinery_scaler.pkl', 'rb'))
-engine_num_predict = load_model(f'App{sep}nn_machinery{sep}engine_num.h5')
-engine_rpm_predict = load_model(f'App{sep}nn_machinery{sep}engine_rpm.h5')
-propulsion_num_predict = load_model(f'App{sep}nn_machinery{sep}propulsion_num.h5')
+loa_predict = load_model(f'App{sep}nn_main{sep}loa.h5')
+scaler = load(open(f'App{sep}nn_main{sep}main_scaler.pkl', 'rb'))
+boa_predict = load_model(f'App{sep}nn_main{sep}boa.h5')
+draft_predict = load_model(f'App{sep}nn_main{sep}draft.h5')
 
-ship_types = ['Fishing', 'Cargo', 'Container ship', 'Drillship / Crane / Pipelayer', 'Lite',
-              'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug',
+ship_types = ['Fishing', 'Cargo', 'Container ship', 'Drillship / Crane / Pipelayer', 'Icebreaker', 'Lite',
+              'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug', 'Tugboat',
               'Vehicles carrier / Ro-Ro', 'Yacht / High-speed craft']
 
 
 def predict_main(form_data):
     df = dict()
-    df['loa'] = float(form_data['loa'])
-    df['boa'] = float(form_data['boa'])
-    df['draft'] = float(form_data['draught'])
+    df['speed'] = float(form_data['speed'])
     df['year'] = int(form_data['year'])
-    df['cx1'] = float(form_data['speed']) ** 2 * (df['boa'] * df['draft'])
-    df['fatness'] = df["loa"] / df["boa"]
+    df['deadweight'] = int(form_data['deadweight'])
     df['ice_0'] = 0 if form_data['ice_class'] == 'on' else 1
     df['ice_1'] = 1 if form_data['ice_class'] == 'on' else 0
     for ship_type in ship_types:
@@ -32,11 +28,9 @@ def predict_main(form_data):
     # print(df)
     input_data = scaler.transform(df)
     # print(input_data)
-    power = round(power_predict.predict(input_data)[0][0])
-    engine_num = round(engine_num_predict.predict(input_data)[0][0])
-    engine_rpm = round(engine_rpm_predict.predict(input_data)[0][0])
-    propulsion_num = round(propulsion_num_predict.predict(input_data)[0][0])
-    return {'Total propulsion power, kW': power,
-            'Number of main engines': engine_num,
-            'Engine RPM': engine_rpm,
-            'Number of propulsion units': propulsion_num}
+    loa = round(loa_predict.predict(input_data)[0][0])
+    boa = round(boa_predict.predict(input_data)[0][0])
+    draught = round(draft_predict.predict(input_data)[0][0])
+    return {'loa': loa,
+            'boa': boa,
+            'draught': draught}

@@ -8,15 +8,14 @@ scaler = load(open(f'App{sep}nn_main{sep}main_scaler.pkl', 'rb'))
 boa_predict = load_model(f'App{sep}nn_main{sep}boa.h5')
 draft_predict = load_model(f'App{sep}nn_main{sep}draft.h5')
 
-ship_types = ['Fishing', 'Cargo', 'Container ship', 'Drillship / Crane / Pipelayer', 'Icebreaker', 'Lite',
-              'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug', 'Tugboat',
+ship_types = ['Fishing', 'Cargo', 'Container ship',
+              'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug',
               'Vehicles carrier / Ro-Ro', 'Yacht / High-speed craft']
 
 
 def predict_main(form_data):
     df = dict()
     df['speed'] = float(form_data['speed'])
-    df['year'] = int(form_data['year'])
     df['deadweight'] = int(form_data['deadweight'])
     df['ice_0'] = 0 if form_data['ice_class'] == 'on' else 1
     df['ice_1'] = 1 if form_data['ice_class'] == 'on' else 0

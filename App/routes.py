@@ -45,7 +45,6 @@ def main_page():
 @app.route('/machinery', methods=['POST', 'GET'])
 def machinery_page():
     form_data = {
-        'ice_class': '',
         'dynpos': '',
         'ship_type': 'Research',
         'loa': 122,
@@ -56,7 +55,7 @@ def machinery_page():
         }
 
     result = {
-        'Total propulsion power, kW': 0,
+        'Total engine power, kW': 0,
         'Number of main engines': 0,
         'Engine RPM': 0,
         'Number of propulsion units': 0,

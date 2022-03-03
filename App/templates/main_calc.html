@@ -26,16 +26,10 @@
                     <td><input type="number" step="0.1" class="form-control" name="speed" value="{{ form_data['speed'] }}"></td>
                   </tr>
                   <tr>
-                    <td>Year</td>
-                    <td><input type="number" step="1" class="form-control" name="year" value="{{ form_data['year'] }}"></td>
-                  </tr>
-                  <tr>
                     <td>Vessel type</td>
                     <td>
                         <select name="ship_type" class="form-select">
-                            {% for ship_type in ['Fishing', 'Cargo', 'Container ship', 'Drillship / Crane / Pipelayer', 'Lite',
-              'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug',
-              'Vehicles carrier / Ro-Ro', 'Yacht / High-speed craft'] %}
+                            {% for ship_type in ship_types %}
                                 {% if ship_type == form_data['ship_type'] %}
                                     <option selected>{{ ship_type }}</option>
                                 {% else %}

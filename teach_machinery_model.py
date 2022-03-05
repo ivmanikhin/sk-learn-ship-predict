@@ -48,7 +48,7 @@ df["fatness"] = df["loa"] / df["boa"]
 good_rows = np.abs(stats.zscore(df["cx"])) < 3
 df = df[good_rows]
 df = df.drop(df[(df['type'] == "cargo")].sample(frac=.8, random_state=1).index)
-df = df.drop(df[(df['type'] == "tanker / gas carrier")].sample(frac=.75, random_state=1).index)
+df = df.drop(df[(df['type'] == "tanker")].sample(frac=.75, random_state=1).index)
 df = df.drop(df[(df['type'] == "container ship")].sample(frac=.2, random_state=1).index)
 print(df["type"].value_counts())
 print(df.shape)
@@ -61,6 +61,7 @@ X = df_one_hot.drop(["power", "cx", "engine_num", "speed", "engine_rpm", "propul
 scaler = RobustScaler()
 scaler.fit(X)
 dump(scaler, open('App/nn_machinery/machinery_scaler.pkl', 'wb'))
+print(scaler.feature_names_in_)
 
 
 for y_name in ["power", "engine_num", "engine_rpm", "propulsion_num"]:

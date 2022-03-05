@@ -144,3 +144,4 @@ cython_debug/
 /venv/
 /App/__pycache__/
 /teach_machinery_model.py
+/teach_main_model.py

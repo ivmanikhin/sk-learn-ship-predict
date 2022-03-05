@@ -1,15 +1,22 @@
 from tensorflow.keras.models import load_model
 from pickle import load
 from os import sep
+import tensorflow as tf
 
 
-loa_predict = load_model(f'App{sep}nn_main{sep}loa.h5')
+def mean_square_percentage_loss(y_true, y_pred):
+    y_true = tf.cast(y_true, dtype=tf.float32)
+    loss = float((100 * (y_pred - y_true) / y_true) ** 2)
+    return loss
+
+
+loa_predict = load_model(f'App{sep}nn_main{sep}loa.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
 scaler = load(open(f'App{sep}nn_main{sep}main_scaler.pkl', 'rb'))
-boa_predict = load_model(f'App{sep}nn_main{sep}boa.h5')
-draft_predict = load_model(f'App{sep}nn_main{sep}draft.h5')
+boa_predict = load_model(f'App{sep}nn_main{sep}boa.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
+draft_predict = load_model(f'App{sep}nn_main{sep}draft.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
 
-ship_types = ['Fishing', 'Cargo', 'Container ship',
-              'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug',
+ship_types = ['Fishing', 'Cargo', 'Container ship', 'Gas carrier',
+              'Passenger ship', 'Research', 'Supply', 'Tanker', 'Tug',
               'Vehicles carrier / Ro-Ro', 'Yacht / High-speed craft']
 
 

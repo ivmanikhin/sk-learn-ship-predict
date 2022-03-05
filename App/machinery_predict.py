@@ -16,17 +16,10 @@ engine_num_predict = load_model(f'App{sep}nn_machinery{sep}engine_num.h5', custo
 engine_rpm_predict = load_model(f'App{sep}nn_machinery{sep}engine_rpm.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
 propulsion_num_predict = load_model(f'App{sep}nn_machinery{sep}propulsion_num.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
 
-ship_types = ['Fishing', 'Cargo', 'Container ship',
-              'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug',
+ship_types = ['Fishing', 'Cargo', 'Container ship', 'Gas carrier',
+              'Passenger ship', 'Research', 'Supply', 'Tanker', 'Tug',
               'Vehicles carrier / Ro-Ro', 'Yacht / High-speed craft']
 
-
-
-
-
-
-
-#
 
 def predict_machinery(form_data):
     df = dict()

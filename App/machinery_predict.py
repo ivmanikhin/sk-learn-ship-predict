@@ -1,18 +1,32 @@
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 from pickle import load
 from os import sep
 
 
-power_predict = load_model(f'App{sep}nn_machinery{sep}power.h5')
+def mean_square_percentage_loss(y_true, y_pred):
+    y_true = tf.cast(y_true, dtype=tf.float32)
+    loss = float((100 * (y_pred - y_true) / y_true) ** 2)
+    return loss
+
+
+power_predict = load_model(f'App{sep}nn_machinery{sep}power.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
 scaler = load(open(f'App{sep}nn_machinery{sep}machinery_scaler.pkl', 'rb'))
-engine_num_predict = load_model(f'App{sep}nn_machinery{sep}engine_num.h5')
-engine_rpm_predict = load_model(f'App{sep}nn_machinery{sep}engine_rpm.h5')
-propulsion_num_predict = load_model(f'App{sep}nn_machinery{sep}propulsion_num.h5')
+engine_num_predict = load_model(f'App{sep}nn_machinery{sep}engine_num.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
+engine_rpm_predict = load_model(f'App{sep}nn_machinery{sep}engine_rpm.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
+propulsion_num_predict = load_model(f'App{sep}nn_machinery{sep}propulsion_num.h5', custom_objects={"mean_square_percentage_loss": mean_square_percentage_loss})
 
 ship_types = ['Fishing', 'Cargo', 'Container ship',
               'Passenger ship', 'Research', 'Supply', 'Tanker / Gas carrier', 'Tug',
               'Vehicles carrier / Ro-Ro', 'Yacht / High-speed craft']
 
+
+
+
+
+
+
+#
 
 def predict_machinery(form_data):
     df = dict()

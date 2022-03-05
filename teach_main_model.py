@@ -56,7 +56,7 @@ df_one_hot = pd.concat([df.drop(["ice", "type", "dynpos"], axis=1), ice, ship_ty
 X = df_one_hot.drop(["loa", "boa", "draft"], axis=1)
 scaler = RobustScaler()
 scaler.fit(X)
-dump(scaler, open('main_scaler.pkl', 'wb'))
+dump(scaler, open('App/nn_main/main_scaler.pkl', 'wb'))
 print(scaler.feature_names_in_)
 
 
@@ -74,6 +74,15 @@ for y_name in ["loa", "boa", "draft"]:
     tf.random.set_seed(32)
     leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.1)
     model = Sequential([
+        Dense(160, activation=leaky_relu),
+        Dense(160, activation=leaky_relu),
+        Dense(160, activation=leaky_relu),
+        Dense(160, activation=leaky_relu),
+        Dense(160, activation=leaky_relu),
+        Dense(160, activation=leaky_relu),
+        Dense(160, activation=leaky_relu),
+        Dense(160, activation=leaky_relu),
+        Dense(160, activation=leaky_relu),
         Dense(160, activation=leaky_relu),
         Dense(160, activation=leaky_relu),
         Dense(160, activation=leaky_relu),

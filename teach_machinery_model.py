@@ -60,7 +60,7 @@ df_one_hot = pd.concat([df.drop(["type", "dynpos"], axis=1), ship_type, dynpos],
 X = df_one_hot.drop(["power", "cx", "engine_num", "speed", "engine_rpm", "propulsion_num"], axis=1)
 scaler = RobustScaler()
 scaler.fit(X)
-dump(scaler, open('App/nn_machinery/machinery_scaler.pkl', 'wb'))
+dump(scaler, open('machinery_scaler.pkl', 'wb'))
 print(scaler.feature_names_in_)
 
 

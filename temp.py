@@ -3,6 +3,7 @@ import pandas as pd
 import pymysql
 import mariadb
 import numpy as np
+from App.constants import *
 
 
 def make_batches(list_of_something, batch_size=1000):
@@ -34,7 +35,7 @@ string_batches = make_batches(strings)
 sql_queries = [f"INSERT INTO ships_details ({columns})\n VALUES {', '.join(string)}" for string in string_batches]
 
 
-with mariadb.connect(host="ships-db.ceb9xxeumyfk.eu-central-1.rds.amazonaws.com", user="admin", password="ca78lo91ps23ck", port=3306, database="ships") as remote_con:
+with mariadb.connect(host=HOST, user=USER, password=PASSWORD, port=3306, database=DATABASE) as remote_con:
     print("connected")
     cur = remote_con.cursor()
     _ = 0

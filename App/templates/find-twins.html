@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}
+ Ships with same parameters
+{% endblock %}
+
+{% block content %}
+    <h2>Vessels with similar parameters</h2>
+        <table class="table table-hover table-dark" style="width:500px;">
+            <col style="width:300px">
+            <col style="width:200px">
+              <thead>
+                <tr>
+                    <th scope="col">IMO</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Ship type</th>
+                    <th scope="col">Classification society</th>
+                    <th scope="col">Class notation</th>
+                    <th scope="col">Length overall, m</th>
+                    <th scope="col">Breadth, m</th>
+                    <th scope="col">Draught, m</th>
+                    <th scope="col">Deadweight, ton</th>
+                    <th scope="col">Dry displacement, ton</th>
+                    <th scope="col">Gross tonnage</th>
+                    <th scope="col">Net tonnage</th>
+                    <th scope="col">Speed, kn</th>
+                    <th scope="col">Crew</th>
+                    <th scope="col">Passengers</th>
+                    <th scope="col">Year of build</th>
+                    <th scope="col">Total power, kW</th>
+                    <th scope="col">Number of main engines</th>
+                    <th scope="col">Main engine RPM</th>
+                    <th scope="col">Propulsion type</th>
+                    <th scope="col">Number of propulsion units</th>
+                </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                    <td>Deadweight, ton</td>
+                    <td><input type="number" step="0.1" class="form-control" name="deadweight" value="{{ form_data['deadweight'] }}"></td>
+                  </tr>
+              </tbody>
+        </table>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+{% endblock %}

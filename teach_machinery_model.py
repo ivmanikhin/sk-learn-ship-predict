@@ -11,7 +11,7 @@ from sklearn.preprocessing import RobustScaler
 from pickle import dump
 from time import sleep
 
-
+# function extracting SQL selection to pandas dataframe
 def extract_table_from_sql(table_name, sql_column_names, df_column_names, additional_parameters):
     try:
         with sqlite3.connect('data/ships.db') as con:
@@ -21,18 +21,19 @@ def extract_table_from_sql(table_name, sql_column_names, df_column_names, additi
     except:
         print("Failed to read SQL")
 
-
+# custom loss function for model training
 def mean_square_percentage_loss(y_true, y_pred):
     y_true = tf.cast(y_true, dtype=tf.float32)
     loss = float((100 * (y_pred - y_true) / y_true) ** 2)
     return loss
 
-
+# Making dataset to train model 
 df = extract_table_from_sql(table_name="ships_details",
                             sql_column_names="uni_type, loa, boa, draft, speed, power, engine_num, engine_rpm, propulsion_num, dynpos",
                             df_column_names=["type", "loa", "boa", "draft", "speed", "power", "engine_num", "engine_rpm", "propulsion_num", "dynpos"],
                             additional_parameters="where year > 1985 and uni_type not in ('icebreaker', 'drillship / crane / pipelayer', 'tugboat', 'light') and year != '' and loa > 15 and engine_num not NULL and engine_rpm not NULL and propulsion_num not NULL and uni_type not NULL and boa not NULL and (loa / boa) > 2 and draft between 1 and 30 and speed between 3 and 100 and power between 10 and 120000")
 
+# Preparing dataset
 df["loa"] = df["loa"].astype("float64")
 df["boa"] = df["boa"].astype("float64")
 df["draft"] = df["draft"].astype("float64")
@@ -45,25 +46,29 @@ df["cx"] = (df["speed"] ** 3 * (df["loa"] * df["boa"] * df["draft"]) **(2/3)) / 
 # df["cx1"] =  df["speed"] ** 3 * (df["loa"] * df["boa"] * df["draft"]) **(2/3)
 df["cx1"] =  df["speed"] ** 2 * (df["boa"] * df["draft"])
 df["fatness"] = df["loa"] / df["boa"]
+# removing outliers
 good_rows = np.abs(stats.zscore(df["cx"])) < 3
 df = df[good_rows]
+# There are three too popular types of vessels. Clean them up.
 df = df.drop(df[(df['type'] == "cargo")].sample(frac=.8, random_state=1).index)
 df = df.drop(df[(df['type'] == "tanker")].sample(frac=.75, random_state=1).index)
 df = df.drop(df[(df['type'] == "container ship")].sample(frac=.2, random_state=1).index)
 print(df["type"].value_counts())
 print(df.shape)
+# One-hot 
 ship_type = pd.get_dummies(df["type"], prefix="type")
 dynpos = pd.get_dummies(df["dynpos"], prefix="dynpos")
 df_one_hot = pd.concat([df.drop(["type", "dynpos"], axis=1), ship_type, dynpos], axis=1)
 
-
+# Drop columns that we don't use in training
 X = df_one_hot.drop(["power", "cx", "engine_num", "speed", "engine_rpm", "propulsion_num"], axis=1)
+# Apply scaler and save it
 scaler = RobustScaler()
 scaler.fit(X)
 dump(scaler, open('App/nn_machinery/machinery_scaler.pkl', 'wb'))
 print(scaler.feature_names_in_)
 
-
+# We need several models to predict different parameters. Let's make it 
 for y_name in ["power", "engine_num", "engine_rpm", "propulsion_num"]:
     print(f'============{y_name}=================================')
     y = df_one_hot.loc[:, [y_name]]

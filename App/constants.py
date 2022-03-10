@@ -1,3 +1,9 @@
+HOST = "ships-db.ceb9xxeumyfk.eu-central-1.rds.amazonaws.com"
+USER = "admin"
+PASSWORD = "ca78lo91ps23ck"
+PORT = 3306
+DATABASE = "ships"
+
 TABLE_NAME = "ships_details"
 COL_NAMES = "imo_no, " \
             "name, " \

@@ -1,4 +1,4 @@
-from App import app, machinery_predict, main_predict
+from App import app, machinery_predict, main_predict, find_twins
 from flask import render_template, request
 
 
@@ -72,3 +72,9 @@ def machinery_page():
 @app.route('/about/<about>')
 def about_page(about):
     return f'<h1 style="text-align: center;">About {about}</h1>'
+
+
+@app.route('/twins')
+def twins_page():
+
+    return render_template('find_twins.html', twins=find_twins.extract_table_from_sql())

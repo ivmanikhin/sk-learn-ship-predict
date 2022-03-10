@@ -144,3 +144,4 @@ cython_debug/
 /venv/
 /App/__pycache__/
 /Python.zip
+/App/constants.py

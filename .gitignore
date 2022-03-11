@@ -145,3 +145,4 @@ cython_debug/
 /App/__pycache__/
 /Python.zip
 /App/constants.py
+/App/some_text.py

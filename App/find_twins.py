@@ -1,5 +1,6 @@
 import pymysql
 from App.constants import *
+from App.some_text import *
 
 
 def extract_table_from_sql(where="imo_no in (9832717, 9864332)"):
@@ -9,8 +10,6 @@ def extract_table_from_sql(where="imo_no in (9832717, 9864332)"):
             cur.execute(f"SELECT {COL_NAMES} FROM {TABLE_NAME} WHERE {where}")
             raw_data = cur.fetchall()
             values = [dict(zip(DF_COL_NAMES, values)) for values in raw_data]
-
-
         return values
     except:
         print("Failed to read SQL")

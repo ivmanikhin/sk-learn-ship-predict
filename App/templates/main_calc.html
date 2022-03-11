@@ -28,7 +28,7 @@
                   <tr>
                     <td>Vessel type</td>
                     <td>
-                        <select name="ship_type" class="form-select">
+                        <select name="uni_type" class="form-select">
                             {% for ship_type in ship_types %}
                                 {% if ship_type == form_data['ship_type'] %}
                                     <option selected>{{ ship_type }}</option>
@@ -105,6 +105,45 @@
                 </tr>
             {% endfor %}
         </tbody>
+    </table>
+    <h2>Vessels with similar parameters</h2>
+    <table class="table table-hover table-dark" style="width:500px;">
+        <col style="width:300px">
+        <col style="width:200px">
+          <thead>
+            <tr>
+                <th scope="col">IMO</th>
+                <th scope="col">Name</th>
+                <th scope="col">Ship type</th>
+                <th scope="col">Classification society</th>
+                <th scope="col">Class notation</th>
+                <th scope="col">Length overall, m</th>
+                <th scope="col">Breadth, m</th>
+                <th scope="col">Draught, m</th>
+                <th scope="col">Deadweight, ton</th>
+                <th scope="col">Dry displacement, ton</th>
+                <th scope="col">Gross tonnage</th>
+                <th scope="col">Net tonnage</th>
+                <th scope="col">Speed, kn</th>
+                <th scope="col">Crew</th>
+                <th scope="col">Passengers</th>
+                <th scope="col">Year of build</th>
+                <th scope="col">Total power, kW</th>
+                <th scope="col">Number of main engines</th>
+                <th scope="col">Main engine RPM</th>
+                <th scope="col">Propulsion type</th>
+                <th scope="col">Number of propulsion units</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ship in twins %}
+              <tr>
+                  {% for value in ship.values() %}
+                    <td>{{ value }}</td>
+                  {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
     </table>
     <!-- Optional JavaScript; choose one of the two! -->
 

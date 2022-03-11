@@ -3,7 +3,7 @@ from App.constants import *
 from App.some_text import *
 
 
-def extract_table_from_sql(where="imo_no in (9832717, 9864332)"):
+def extract_table_from_sql(where):
     try:
         with pymysql.connect(host=HOST, user=USER, password=PASSWORD, port=PORT, database=DATABASE) as con:
             cur = con.cursor()
@@ -15,3 +15,10 @@ def extract_table_from_sql(where="imo_no in (9832717, 9864332)"):
         print("Failed to read SQL")
 
 
+def get_twins(params, delta=.1):
+    where = ""
+    for key in params.keys():
+        where += f"{key} between {(1 - delta) * params[key]} and {(1 + delta) * params[key]} and "
+    where = where[:-4]
+    print(where)
+    return extract_table_from_sql(where=where)

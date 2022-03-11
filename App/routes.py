@@ -12,7 +12,7 @@ def main_page():
     form_data = {
         'ice_class': '',
         'dynpos': '',
-        'ship_type': 'Cargo',
+        'uni_type': 'Cargo',
         'deadweight': 20000,
         'speed': 15,
         'year': 2024
@@ -30,6 +30,9 @@ def main_page():
             'Number of propulsion units': 0
         }
     ]
+
+    twins = find_twins.get_twins(params=form_data)
+
     if request.method == 'POST':
         form_data.update(request.form)
         result[0] = main_predict.predict_main(form_data)
@@ -37,16 +40,16 @@ def main_page():
         form_data['boa'] = result[0]['boa']
         form_data['draught'] = result[0]['draught']
         result[1] = machinery_predict.predict_machinery(form_data)
-        return render_template('main_calc.html', ship_types=main_predict.ship_types, form_data=form_data, result=result)
+        return render_template('main_calc.html', ship_types=main_predict.ship_types, form_data=form_data, result=result, twins=twins)
 
-    return render_template('main_calc.html', ship_types=main_predict.ship_types, form_data=form_data, result=result)
+    return render_template('main_calc.html', ship_types=main_predict.ship_types, form_data=form_data, result=result, twins=[])
 
 
 @app.route('/machinery', methods=['POST', 'GET'])
 def machinery_page():
     form_data = {
         'dynpos': '',
-        'ship_type': 'Research',
+        'uni_type': 'Research',
         'loa': 122,
         'boa': 20,
         'draught': 5.6,
@@ -74,7 +77,10 @@ def about_page(about):
     return f'<h1 style="text-align: center;">About {about}</h1>'
 
 
-@app.route('/twins')
-def twins_page():
-
-    return render_template('find_twins.html', twins=find_twins.extract_table_from_sql())
+# @app.route('/twins')
+# def twins_page():
+#     where = ""
+#     for key in form_data.keys():
+#         where += f"{key} between {\{(1 - delta) * form_data[key]\}} and {\{(1 + delta) * form_data[key]\}} and "
+#     where = where[:-4]
+#     return render_template('find_twins.html', twins=find_twins.extract_table_from_sql(where=where)

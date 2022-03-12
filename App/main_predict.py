@@ -27,7 +27,7 @@ def predict_main(form_data):
     df['ice_0'] = 0 if form_data['ice_class'] == 'on' else 1
     df['ice_1'] = 1 if form_data['ice_class'] == 'on' else 0
     for ship_type in ship_types:
-        df[f'type_{ship_type}'] = 1 if form_data['ship_type'] == ship_type else 0
+        df[f'type_{ship_type}'] = 1 if form_data['uni_type'] == ship_type else 0
     df['dynpos_0'] = 0 if form_data['dynpos'] == 'on' else 1
     df['dynpos_1'] = 1 if form_data['dynpos'] == 'on' else 0
     df = [list(df.values())]

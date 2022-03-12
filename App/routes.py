@@ -31,7 +31,7 @@ def main_page():
         }
     ]
 
-    twins = find_twins.get_twins(params=form_data)
+
 
     if request.method == 'POST':
         form_data.update(request.form)
@@ -40,7 +40,7 @@ def main_page():
         form_data['boa'] = result[0]['boa']
         form_data['draught'] = result[0]['draught']
         result[1] = machinery_predict.predict_machinery(form_data)
-        return render_template('main_calc.html', ship_types=main_predict.ship_types, form_data=form_data, result=result, twins=twins)
+        return render_template('main_calc.html', ship_types=main_predict.ship_types, form_data=form_data, result=result, twins=find_twins.get_twins(params=form_data))
 
     return render_template('main_calc.html', ship_types=main_predict.ship_types, form_data=form_data, result=result, twins=[])
 

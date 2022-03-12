@@ -15,10 +15,13 @@ def extract_table_from_sql(where):
         print("Failed to read SQL")
 
 
-def get_twins(params, delta=.1):
-    where = ""
-    for key in params.keys():
-        where += f"{key} between {(1 - delta) * params[key]} and {(1 + delta) * params[key]} and "
-    where = where[:-4]
+def get_twins(params, delta=.05):
+    where = f"ice_class = {1 if params['ice_class'] == 'on' else 0} and " \
+            f"dynpos = {1 if params['dynpos'] == 'on' else 0} and uni_type = '{params['uni_type']}' " \
+            f"and deadweight between {int(params['deadweight']) * (1 - delta)} and {int(params['deadweight']) * (1 + delta)} " \
+            f"and speed between {float(params['speed']) * (1 - delta)} and {float(params['speed']) * (1 + delta)} "
+    # for key in params.keys():
+    #     where += f"{key} between {(1 - delta) * params[key]} and {(1 + delta) * params[key]} and "
+    # where = where[:-4]
     print(where)
     return extract_table_from_sql(where=where)

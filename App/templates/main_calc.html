@@ -30,7 +30,7 @@
                     <td>
                         <select name="uni_type" class="form-select">
                             {% for ship_type in ship_types %}
-                                {% if ship_type == form_data['ship_type'] %}
+                                {% if ship_type == form_data['uni_type'] %}
                                     <option selected>{{ ship_type }}</option>
                                 {% else %}
                                     <option>{{ ship_type }}</option>

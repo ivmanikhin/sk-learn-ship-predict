@@ -54,7 +54,6 @@ def machinery_page():
         'boa': 20,
         'draught': 5.6,
         'speed': 15,
-        'year': 2024,
         }
 
     result = {
@@ -67,9 +66,9 @@ def machinery_page():
     if request.method == 'POST':
         form_data.update(request.form)
         result = machinery_predict.predict_machinery(form_data)
-        return render_template('machinery_calc.html', ship_types=machinery_predict.ship_types, form_data=form_data, result=result)
+        return render_template('machinery_calc.html', ship_types=machinery_predict.ship_types, form_data=form_data, result=result, twins=find_twins.get_twins_2(params=form_data))
 
-    return render_template('machinery_calc.html', ship_types=machinery_predict.ship_types, form_data=form_data, result=result)
+    return render_template('machinery_calc.html', ship_types=machinery_predict.ship_types, form_data=form_data, result=result,  twins=[])
 
 
 @app.route('/about/<about>')
